@@ -18,17 +18,16 @@ public class NioServerWithSelector {
 		Selector selector = null;
 		
 		try (ServerSocketChannel server = ServerSocketChannel.open()){
-			server.socket().bind(new InetSocketAddress("localhost", 10000));
+			server.socket().bind(new InetSocketAddress(10000));
 			
 			selector = Selector.open();
 
 			while(true){
-				try(SocketChannel socketChannel = server.accept()){
-					socketChannel.configureBlocking(false);
 					
-					socketChannel.register(selector, SelectionKey.OP_CONNECT);
-				}
-				
+				SocketChannel socketChannel = server.accept();
+				socketChannel.configureBlocking(false);
+
+				socketChannel.register(selector, SelectionKey.OP_CONNECT);				
 				
 				
 			}
