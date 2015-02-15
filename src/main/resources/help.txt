@@ -1,0 +1,3 @@
+http://www.onjava.com/pub/a/onjava/2002/09/04/nio.html?page=2
+
+http://stackoverflow.com/questions/2685534/java-serversocketchannel-socketchannel-callback

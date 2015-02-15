@@ -31,9 +31,9 @@ public class Client {
 			}
 			pw.append("Hello! again");
 			pw.flush();
-//			while((line=br.readLine())!=null){
-//				System.out.println("from server = "+line);
-//			}
+			while((line=br.readLine())!=null){
+				System.out.println("from server = "+line);
+			}
 
 			
 		} catch (UnknownHostException e) {
