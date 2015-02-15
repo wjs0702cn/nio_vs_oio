@@ -20,6 +20,7 @@ public class NioServerWithSelector {
 //	TODO 2015-02-15<br/>
 //	 这段代码很行为很奇怪，只要有链接进来，就不断的发动readOps.
 //	 连iterator.remove方法都不能移除，
+//	监测连接的connected属性，明明连接已经断掉了，但是服务器还是socketChannle.isConnected = true
 	
 	public static void main(String[] args) {
 		NioServerWithSelector server = new NioServerWithSelector();
