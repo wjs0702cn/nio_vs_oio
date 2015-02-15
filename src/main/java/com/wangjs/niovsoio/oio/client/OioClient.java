@@ -36,10 +36,8 @@ public class OioClient {
 
             for (String greeting: greetingWords){
                 toServer.println(greeting);
-                toServer.flush();
-                while((line=fromServer.readLine())!=null){
+                    line=fromServer.readLine();
                     System.out.println("from server = "+line);
-                }
             }
 
 

@@ -53,7 +53,6 @@ public class OioServer {
 				while((line = fromClient.readLine())!=null){
 					System.out.println("from Client = "+line);
 					toClient.println("Thanks");
-                    toClient.flush();
 					if("Bye".equalsIgnoreCase(line)){
 						break;
 					}
