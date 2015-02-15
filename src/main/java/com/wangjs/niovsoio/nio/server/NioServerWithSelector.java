@@ -20,7 +20,7 @@ public class NioServerWithSelector {
 //	TODO 2015-02-15<br/>
 //	 这段代码很行为很奇怪，只要有链接进来，就不断的发动readOps.
 //	 连iterator.remove方法都不能移除，
-//	监测连接的connected属性，明明连接已经断掉了，但是服务器还是socketChannle.isConnected = true
+//	监测连接的connected属性，明明连接已经断掉了，但是服务器还是socketChannel.isConnected = true
 	
 	public static void main(String[] args) {
 		NioServerWithSelector server = new NioServerWithSelector();
@@ -43,29 +43,17 @@ public class NioServerWithSelector {
 			sel = Selector.open();
 			serverChannel.register(sel, SelectionKey.OP_ACCEPT);
 			
-			int stopCount = 50;
-			
 			while(true){
-				int readyers = sel.select();
+				int available = sel.select();
 				
-				if(readyers==0){
+				if(available==0){
 					continue;
 				}
 				
 				Iterator<SelectionKey> iterator = sel.selectedKeys().iterator();
 
 				while (iterator.hasNext()) {
-					SelectionKey key = (SelectionKey) iterator.next();
-					
-					if(stopCount--==0){
-						System.exit(0);
-					}else{
-						System.out.println("sel.selectedKeys() ================== ");
-						for(SelectionKey selectionKey : sel.selectedKeys()){
-							System.out.println("selectionKey = "+selectionKey.interestOps()+"_"+selectionKey.channel());
-						}
-						System.out.println("sel.selectedKeys() ================== ");
-					}
+					SelectionKey key = iterator.next();
 
 					// remove current key
 					iterator.remove();
@@ -73,21 +61,20 @@ public class NioServerWithSelector {
 					if (key.isAcceptable()) {
 						System.out.println("new socket connecting....");
 						doAcceptThing(key);
-						continue;
 					}
 
 					if (key.isReadable()) {
 						System.out.println("socket is sending data to server....");
 						doReadThing(key);
-						continue;
+//						doEchoThing(key);
 					}
 
 					if (key.isWritable()) {
 						System.out.println("socket is ready for receive data...");
 						doWriteThing(key);
-						continue;
 					}
 					
+					key.cancel();
 
 				}
 			}
@@ -115,16 +102,13 @@ public class NioServerWithSelector {
 	
 	private void doReadThing(SelectionKey key) throws IOException{
 		SocketChannel socketChannel = (SocketChannel)key.channel();		
-		
-		System.out.println("socket is connected = "+socketChannel.isConnected());
-		
 		ByteBuffer buffer = ByteBuffer.allocate(Constants.READ_BUFFER);
 		
 		StringBuilder sb = new StringBuilder();
 		
 		int size = -1;
 		Charset charset = Charset.forName(Constants.CHARSET);
-		
+
 		while(true){
 			size = socketChannel.read(buffer);
 			if(size != -1){
@@ -140,7 +124,31 @@ public class NioServerWithSelector {
 
 	}
 	
-	private void doWriteThing(SelectionKey key){
+	private void doEchoThing(SelectionKey key) throws IOException{
+		SocketChannel socketChannel = (SocketChannel)key.channel();		
+		ByteBuffer buffer = ByteBuffer.allocate(Constants.READ_BUFFER);
+		
+		int size = -1;
+		
+		while(true){
+			buffer.clear();
+			size = socketChannel.read(buffer);
+			if(size == -1){
+				break;
+			}
+			buffer.flip();
+			socketChannel.write(buffer);
+			
+		}
+	}
+	
+	private void doWriteThing(SelectionKey key) throws IOException{
+		SocketChannel socketChannel = (SocketChannel)key.channel();
+		ByteBuffer buffer = ByteBuffer.allocate(Constants.WRITE_BUFFER);
+		
+		buffer.put("Hello, response from server".getBytes());
+		buffer.flip();
+		socketChannel.write(buffer);
 		
 	}
 }
