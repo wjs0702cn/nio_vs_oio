@@ -8,13 +8,28 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.wangjs.niovsoio.util.Constants;
 
 public class OioClient {
     public static void main(String[] args) {
-        OioClient client = new OioClient();
-        client.sendData();
+//        OioClient client = new OioClient();
+//        client.sendData();
+    	
+    	ExecutorService pools = Executors.newFixedThreadPool(10);
+    	while(true){
+    		pools.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					new OioClient().sendData();
+				}
+			});
+    	}
+    	
+    	
     }
 
     private List<String> greetingWords = new ArrayList<String>();

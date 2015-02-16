@@ -27,6 +27,10 @@ public class NioServerWithSelector {
     // 服务器在接受第一个请求的时候表现正常
     // 但是，在第二个和第三个请求接入的时候表现为阻塞状态。
     // 经过查看，是int available = sel.select();方法一直在阻塞
+	
+	//以上两个问题，在于：1. 不用在方法外面调用key.cancel()
+	// 2. 在read操作读到-1 的时候，应该把channel.close();
+	// 3. IO操作最好在ThreadGroup 或者  try...catch中执行，原因在于客户端不受控制，随时会断掉。
 
 
     public static void main(String[] args) {
@@ -66,23 +70,23 @@ public class NioServerWithSelector {
                     // remove current key
                     iterator.remove();
 
-                    if (key.isAcceptable()) {
+                    if (key.isValid() && key.isAcceptable()) {
                         System.out.println("new socket connecting....");
                         doAcceptThing(key);
                     }
 
-                    if (key.isReadable()) {
+                    if (key.isValid() && key.isReadable()) {
                         System.out.println("socket is sending data to server....");
 //                        doReadThing(key);
-						doEchoThing(key);
+							doEchoThing(key);
+
                     }
 
-                    if (key.isWritable()) {
+                    if (key.isValid() && key.isWritable()) {
                         System.out.println("socket is ready for receive data...");
                         doWriteThing(key);
                     }
 
-                    key.cancel();
 
                 }
             }
@@ -139,22 +143,28 @@ public class NioServerWithSelector {
 
         int size = -1;
 
-        while (true) {
-            buffer.clear();
-            size = socketChannel.read(buffer);
-            if (size == -1) {
-                break;
-            }
-            buffer.flip();
-            socketChannel.write(buffer);
+        try {
+			while (true) {
+			    buffer.clear();
+			    size = socketChannel.read(buffer);
+			    if (size == -1) {
+			        break;
+			    }
+			    buffer.flip();
+			    socketChannel.write(buffer);
 
-        }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+        socketChannel.close();
     }
 
     private void doWriteThing(SelectionKey key) throws IOException {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(Constants.WRITE_BUFFER);
-
+        buffer.clear();
         buffer.put("Hello, response from server".getBytes());
         buffer.flip();
         socketChannel.write(buffer);
