@@ -1,3 +1,7 @@
 http://www.onjava.com/pub/a/onjava/2002/09/04/nio.html?page=2
 
 http://stackoverflow.com/questions/2685534/java-serversocketchannel-socketchannel-callback
+
+--- 能执行的例子
+http://www.cnblogs.com/bronte/articles/1966550.html
+
