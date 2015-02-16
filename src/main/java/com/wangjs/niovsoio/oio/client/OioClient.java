@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 
 import com.wangjs.niovsoio.util.Constants;
 
+
 public class OioClient {
     public static void main(String[] args) {
 //        OioClient client = new OioClient();
@@ -52,6 +53,8 @@ public class OioClient {
 
             for (String greeting : greetingWords) {
                 toServer.println(greeting);
+                //1. 客户端不可以循环判断一个流是否读完，这个操作会阻塞IO的。
+                // 客户端判断的是否读完，完全按照预定。
                 line = fromServer.readLine();
                 System.out.println("from server = " + line);
             }
