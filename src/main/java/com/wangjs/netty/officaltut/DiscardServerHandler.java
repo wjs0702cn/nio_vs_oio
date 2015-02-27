@@ -19,9 +19,7 @@ public class DiscardServerHandler extends SimpleChannelHandler{
 //		}
 		
 		// change to echo server
-		Object message = e.getMessage();
-		e.getChannel().write(message);
-		System.out.println(message);
+		e.getChannel().write(e.getMessage());
 		
 	}
 
