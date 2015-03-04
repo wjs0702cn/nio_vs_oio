@@ -14,7 +14,9 @@ public class TimeDecoder extends FrameDecoder{
 			System.out.println("buffer.readableBytes() = "+buffer.readableBytes());
 			return null;
 		}
-		return buffer.readBytes(8);
+//		return buffer.readBytes(8);
+		// change bytes to POJO
+		return new UnixTime(buffer.readLong());
 	}
 	
 

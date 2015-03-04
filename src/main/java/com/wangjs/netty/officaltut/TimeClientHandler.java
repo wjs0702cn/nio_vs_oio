@@ -14,10 +14,15 @@ public class TimeClientHandler extends SimpleChannelHandler{
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e)
 			throws Exception {
-		ChannelBuffer buffer = (ChannelBuffer)e.getMessage();
-		long currentTimeMillis = (buffer.readLong()-2208988800L)*1000L;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println(formatter.format(new Date(currentTimeMillis)));
+//		ChannelBuffer buffer = (ChannelBuffer)e.getMessage();
+//		long currentTimeMillis = (buffer.readLong()-2208988800L)*1000L;
+//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		System.out.println(formatter.format(new Date(currentTimeMillis)));
+//		e.getChannel().close();
+		
+		// change byte to POJO
+		UnixTime time = (UnixTime)e.getMessage();
+		System.out.println(time);
 		e.getChannel().close();
 	}
 
