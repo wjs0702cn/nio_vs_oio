@@ -51,6 +51,14 @@ public class TimeServerHandler extends SimpleChannelHandler{
 		f.addListener(ChannelFutureListener.CLOSE);
 		
 	}
+
+	@Override
+	public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e)
+			throws Exception {
+		System.out.println("connected");
+		TimeServer.allChannels.add(e.getChannel());
+	}
+	
 	
 
 }

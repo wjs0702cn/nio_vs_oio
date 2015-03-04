@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
@@ -28,6 +29,13 @@ public class TimeClient {
 		bootstrap.setOption("tcpNoDelay", true);
 		bootstrap.setOption("keepAlive", true);
 		
-		bootstrap.connect(new InetSocketAddress("localhost",8080));
+		ChannelFuture f = bootstrap.connect(new InetSocketAddress("localhost",8080));
+		f.awaitUninterruptibly();
+		if(!f.isSuccess()){
+			f.getCause().printStackTrace();
+		}
+		f.getChannel().getCloseFuture().awaitUninterruptibly();
+		bootstrap.getFactory().releaseExternalResources();
+	
 	}
 }
