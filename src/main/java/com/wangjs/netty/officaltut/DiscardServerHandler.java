@@ -19,8 +19,11 @@ public class DiscardServerHandler extends SimpleChannelHandler{
 //		}
 		
 		// change to echo server
+        // 注意：windows和Mac有行为有很大的不同：
+        // windows 每打一个字符就会回显一个字符
+        // Mac 在敲击回车键之后才有回显全部字符
 		e.getChannel().write(e.getMessage());
-		
+
 	}
 
 	@Override
