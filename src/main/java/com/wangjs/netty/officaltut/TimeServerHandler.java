@@ -33,16 +33,23 @@ public class TimeServerHandler extends SimpleChannelHandler{
 //		long currentLong = System.currentTimeMillis()/1000L+2208988800L;
 //		int currentInt = (int)currentLong;
 //		buffer.writeInt(currentInt);
-		buffer.writeLong(System.currentTimeMillis()/1000L+2208988800L);
-		ChannelFuture f = ch.write(buffer);
 		
-		f.addListener(new ChannelFutureListener() {
-			
-			@Override
-			public void operationComplete(ChannelFuture future) throws Exception {
-				future.getChannel().close();
-			}
-		});
+//		buffer.writeLong(System.currentTimeMillis()/1000L+2208988800L);
+//		ChannelFuture f = ch.write(buffer);
+		
+//		f.addListener(new ChannelFutureListener() {
+//			
+//			@Override
+//			public void operationComplete(ChannelFuture future) throws Exception {
+//				future.getChannel().close();
+//			}
+//		});
+		
+		UnixTime time = new UnixTime(System.currentTimeMillis()/1000L+2208988800L);
+		ChannelFuture f = e.getChannel().write(time);
+		
+		f.addListener(ChannelFutureListener.CLOSE);
+		
 	}
 	
 

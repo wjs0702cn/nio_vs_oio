@@ -19,7 +19,9 @@ public class TimeServer {
 			
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
-				return Channels.pipeline(new TimeServerHandler());
+				return Channels.pipeline(
+						new TimeServerHandler(),
+						new TimeEncoder());
 			}
 		});
 		
